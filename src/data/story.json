@@ -1,0 +1,211 @@
+{
+  "scenes": [
+    {
+      "id": "intro",
+      "text": "The rain hasn't stopped for three days. Blackridge feels like it's drowning, slowly sinking into the mud and the pines. You're sitting in the driver's seat of your beat-up sedan outside a local dive. You're Jaime. You've been running with the Black Hoods since you were kids, answering directly to Bishop. Tonight was a routine collection, smooth and quiet.",
+      "choices": [
+        {
+          "text": "Head back to the safehouse to drop off the cash.",
+          "nextSceneId": "bishop_office",
+          "effects": { "cash": 500, "loyalty": 5 }
+        },
+        {
+          "text": "Wait a minute and watch the street. Things have felt off lately.",
+          "nextSceneId": "bishop_office",
+          "effects": { "heat": -5, "morale": -5, "cash": 500 }
+        }
+      ]
+    },
+    {
+      "id": "bishop_office",
+      "text": "The safehouse is quiet. Bishop is sitting at the heavy oak desk, counting the take. He looks up, his eyes tired but sharp. 'Good work tonight, Jaime. With DCS pushing our borders, I need guys I can trust. I need you closer on the next phase.'",
+      "choices": [
+        {
+          "text": "I'm with you, Bishop. Always have been.",
+          "nextSceneId": "first_task",
+          "effects": { "loyalty": 10 }
+        },
+        {
+          "text": "What does closer mean, exactly?",
+          "nextSceneId": "first_task",
+          "effects": { "loyalty": -5, "morale": 5 }
+        }
+      ]
+    },
+    {
+      "id": "first_task",
+      "text": "Bishop slides a folder across the desk. 'Old man Miller hasn't paid his dues in two months. Give him a reminder. Make it hurt a little, so the neighborhood remembers who runs this block.' It's an uncomfortable task; Miller is harmless.",
+      "choices": [
+        {
+          "text": "Do it cleanly. No hesitation.",
+          "nextSceneId": "dcs_encounter",
+          "effects": { "loyalty": 15, "morale": -15, "heat": 10 }
+        },
+        {
+          "text": "Push back. 'Miller's harmless, Bishop. We don't need to break him.'",
+          "nextSceneId": "dcs_encounter",
+          "effects": { "loyalty": -15, "morale": 10 },
+          "flags": ["pushed_back_miller"]
+        },
+        {
+          "text": "Do it, but let Miller know you aren't happy about it.",
+          "nextSceneId": "dcs_encounter",
+          "effects": { "morale": -5, "heat": 5, "loyalty": 5 },
+          "flags": ["soft_on_miller"]
+        }
+      ]
+    },
+    {
+      "id": "dcs_encounter",
+      "text": "Leaving Miller's place, you run into three guys wearing DCS colors leaning against your car. They're testing the boundaries, stepping deep into Black Hood territory. 'Nice night for a collection,' the lead guy smirks.",
+      "choices": [
+        {
+          "text": "Show force. Put him in the dirt.",
+          "nextSceneId": "deal_gone_wrong",
+          "effects": { "heat": 20, "morale": -10, "loyalty": 5 }
+        },
+        {
+          "text": "De-escalate. 'Wrong block, gentlemen. Walk away.'",
+          "nextSceneId": "deal_gone_wrong",
+          "effects": { "morale": 10, "heat": -5 }
+        }
+      ]
+    },
+    {
+      "id": "deal_gone_wrong",
+      "text": "Later that week, a drug deal arranged by Bishop goes south. A young crew member, Tommy, panics and drops the stash while running from the cops. He's cornered in an alley, begging you for help. 'Bishop will kill me for this, Jaime!'",
+      "choices": [
+        {
+          "text": "Protect him. Tell Bishop the cops hit you both.",
+          "nextSceneId": "bishop_escalates",
+          "effects": { "loyalty": -20, "morale": 20, "heat": 10 },
+          "flags": ["protected_tommy"]
+        },
+        {
+          "text": "Cut him loose. 'You made your bed, Tommy.'",
+          "nextSceneId": "bishop_escalates",
+          "effects": { "loyalty": 15, "morale": -25, "heat": -10 },
+          "flags": ["abandoned_tommy"]
+        }
+      ]
+    },
+    {
+      "id": "bishop_escalates",
+      "text": "The pressure is getting to Bishop. He calls a frantic meeting. He's paranoid, pacing the room. 'DCS is closing in. We have a rat.' He pulls a gun on Marcus, a long-time member, accusing him without proof.",
+      "choices": [
+        {
+          "text": "Stay quiet. Loyalty to Bishop over everything.",
+          "nextSceneId": "dcs_flip",
+          "effects": { "loyalty": 20, "morale": -20 }
+        },
+        {
+          "text": "Speak up privately. Pull Bishop aside to calm him down.",
+          "nextSceneId": "dcs_flip",
+          "effects": { "loyalty": -10, "morale": 10 }
+        },
+        {
+          "text": "Start looking for an exit. Use your connections.",
+          "nextSceneId": "dcs_flip",
+          "effects": { "loyalty": -30, "morale": 5 },
+          "flags": ["looking_for_exit"]
+        }
+      ]
+    },
+    {
+      "id": "dcs_flip",
+      "text": "Darius, the head of DCS, manages to corner you alone at a diner. 'Bishop is losing his mind, Jaime. You're too smart to go down with his sinking ship. Join my crew, or get out of the way.'",
+      "choices": [
+        {
+          "text": "Tell Bishop immediately. Total loyalty.",
+          "nextSceneId": "breaking_point",
+          "effects": { "loyalty": 25, "heat": 15, "morale": -5 }
+        },
+        {
+          "text": "Keep it to yourself. Buy some time.",
+          "nextSceneId": "breaking_point",
+          "effects": { "morale": -5, "heat": -5 }
+        },
+        {
+          "text": "Listen to Darius. Say you'll consider it.",
+          "nextSceneId": "breaking_point",
+          "effects": { "loyalty": -40, "morale": -10, "heat": -15 },
+          "flags": ["dcs_alliance"]
+        }
+      ]
+    },
+    {
+      "id": "breaking_point",
+      "text": "Everything converges. Bishop has completely lost control. He orders you to do a hit on a local community leader who has been speaking out against the gang. It crosses every line you've ever had. There is no coming back from this.",
+      "choices": [
+        {
+          "text": "Carry it out. For the Black Hoods.",
+          "nextSceneId": "ending_jail",
+          "effects": { "loyalty": 50, "morale": -50, "heat": 50 },
+          "conditions": { "minHeat": 50 }
+        },
+        {
+          "text": "Carry it out. For the Black Hoods.",
+          "nextSceneId": "ending_committed",
+          "effects": { "loyalty": 50, "morale": -50, "heat": 50 },
+          "conditions": { "maxHeat": 49 }
+        },
+        {
+          "text": "Refuse the order. Stepping away.",
+          "nextSceneId": "ending_dead",
+          "effects": { "loyalty": -100, "morale": 30 },
+          "conditions": { "minLoyalty": 30 }
+        },
+        {
+          "text": "Refuse the order. Stepping away.",
+          "nextSceneId": "ending_jail",
+          "effects": { "loyalty": -100, "morale": 30 },
+          "conditions": { "maxLoyalty": 29 }
+        },
+        {
+          "text": "Take the stash and leave Blackridge tonight.",
+          "nextSceneId": "ending_flee",
+          "effects": { "heat": -50, "loyalty": -100 },
+          "flags": ["fled_city"],
+          "conditions": { "requiredFlags": ["looking_for_exit"] }
+        },
+        {
+          "text": "Call Darius. Help DCS take out Bishop and seize the territory.",
+          "nextSceneId": "ending_kingpin",
+          "effects": { "loyalty": -100, "heat": 20, "morale": -50 },
+          "flags": ["became_kingpin"],
+          "conditions": { "requiredFlags": ["dcs_alliance"] }
+        }
+      ]
+    },
+    {
+      "id": "ending_jail",
+      "text": "The sirens drown out the rain. You took the fall. Maybe it was a setup, maybe Bishop just needed a scapegoat. You sit in the back of the cruiser, watching the streetlights bleed across the wet glass. You stayed loyal to the end, but you're going down.",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "ending_dead",
+      "text": "Bishop's paranoia, the escalating war with DCS... it all catches up. When you finally refuse the order, the crew turns on you. You manage to drag yourself to the alley, breathing your last under the flickering light of the streetlamp. You went out on your own terms. But you still went out.",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "ending_committed",
+      "text": "You pull the trigger. The community leader drops. You wipe your hands clean and head back to the safehouse. Bishop pulls you close and calls you a brother, but as you look in the mirror, the person staring back has dead eyes. You survived, but you lost the last remnant of who you once were. You are exactly what the crew needs.",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "ending_flee",
+      "text": "You throw your go-bag in the passenger seat and peel out of the city limits. The rain finally begins to let up as you hit the highway. You left the Black Hoods, Bishop, and everything you know behind. You're a ghost now, but you're alive.",
+      "isEnding": true,
+      "choices": []
+    },
+    {
+      "id": "ending_kingpin",
+      "text": "With DCS backing, the coup against Bishop is brutal and efficient. The old guard is wiped out in a single bloody night. As dawn breaks, Darius hands you the keys to Blackridge. You're the boss now. But you traded one paranoid throne for another, and the streets will always demand blood.",
+      "isEnding": true,
+      "choices": []
+    }
+  ]
+}
