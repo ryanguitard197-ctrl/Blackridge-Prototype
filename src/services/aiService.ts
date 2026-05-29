@@ -55,31 +55,33 @@ Available predetermined paths for the story:
 ${choicesWithNextScenes}
 
 Your task:
-1. Pick the index of the path that best fits or can be logically forced from the Player's Action.
-2. Write a 3-4 sentence gritty, atmospheric narrative describing the outcome in the second-person ("You...").
-CRITICAL: Your narrative must be a complete bridge. It must start by acknowledging the player's action, narrate the consequences of that action, and then EXPLICITLY narrate the character moving, traveling, or transitioning to the exact location and time of the next context. Do NOT leave the player in an intermediate state. Your last sentence MUST physically place the player at the exact start of the next scene (see "Leads to context").`;
+1. Pick the index of the path that best fits the Player's Action.
+2. Provide two pieces of narrative:
+    - 'action_consequence': Describe what happens immediately as a result of the player's action, in the current setting.
+    - 'transition_to_next_scene': You MUST vividly describe the character traveling, waiting, or transitioning from the current setting directly to the location/time of the Next Scene context. This is the missing bridge! If the player is in a car, but the next scene is in a safehouse, you must narrate them driving to the safehouse and walking inside.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview", 
         contents: promptText,
         config: {
-            systemInstruction: "You are the Game Master for 'Blackridge', a gritty narrative RPG. Always reply with JSON.",
+            systemInstruction: "You are the Game Master for 'Blackridge', a gritty narrative RPG. Always reply with JSON. You write in the second-person ('You...').",
             temperature: 0.7,
             responseMimeType: "application/json",
             responseSchema: {
                 type: Type.OBJECT,
                 properties: {
-                    narrative: { type: Type.STRING },
+                    action_consequence: { type: Type.STRING, description: "Immediate consequence of the action" },
+                    transition_to_next_scene: { type: Type.STRING, description: "Explicit narrative bridge moving the character from their current physical location to the setting of the next scene." },
                     path_index: { type: Type.INTEGER }
                 },
-                required: ["narrative", "path_index"]
+                required: ["action_consequence", "transition_to_next_scene", "path_index"]
             }
         }
       });
       
       const resJson = JSON.parse(response.text || "{}");
-      if (resJson.narrative && resJson.path_index !== undefined && availableChoices[resJson.path_index]) {
-        outcomeText = resJson.narrative;
+      if (resJson.action_consequence && resJson.transition_to_next_scene && resJson.path_index !== undefined && availableChoices[resJson.path_index]) {
+        outcomeText = `${resJson.action_consequence} ${resJson.transition_to_next_scene}`;
         closestChoice = availableChoices[resJson.path_index];
       } else {
         outcomeText = `You decided to act: "${playerAction}". The consequences ripple through the rainy streets.`;
