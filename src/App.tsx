@@ -10,11 +10,13 @@ import { StartScreen } from './components/StartScreen';
 import { EndingScreen } from './components/EndingScreen';
 import { GameScreen } from './components/GameScreen';
 import { LoadingScreen } from './components/LoadingScreen';
+import { SetupScreen } from './components/SetupScreen';
 
 export default function App() {
   const { 
     gameState, 
     appState,
+    settings,
     setAppState,
     isProcessing, 
     loadingStatus, 
@@ -23,7 +25,10 @@ export default function App() {
     processAction, 
     startGame, 
     continueGame,
-    resetGame 
+    resetGame,
+    fullReset,
+    completeSetup,
+    openSetup
   } = useGameState();
 
   const currentScene = storyData.scenes.find(s => s.id === gameState.currentSceneId) as Scene | undefined;
@@ -46,6 +51,14 @@ export default function App() {
 
   const availableChoices = currentScene?.choices.filter(isChoiceAvailable) || [];
 
+  if (appState === 'setup') {
+    return (
+      <div className="min-h-screen bg-black text-gray-300 font-sans selection:bg-gray-800 p-6">
+        <SetupScreen onComplete={completeSetup} />
+      </div>
+    );
+  }
+
   if (appState === 'loading') {
     return <LoadingScreen 
       statusText={loadingStatus} 
@@ -55,7 +68,7 @@ export default function App() {
   }
 
   if (appState === 'menu' || gameState.currentSceneId === 'start') {
-    return <StartScreen onStart={startGame} onContinue={continueGame} hasSave={hasSave} />;
+    return <StartScreen onStart={startGame} onContinue={continueGame} onSettings={openSetup} hasSave={hasSave} />;
   }
 
   if (gameState.currentSceneId === 'ending_jail') {
@@ -129,14 +142,21 @@ export default function App() {
             <span className={gameState.morale < 30 ? 'text-red-500' : ''}>Morale: {gameState.morale}</span>
             <span className={gameState.heat > 70 ? 'text-red-500' : ''}>Heat: {gameState.heat}</span>
           </div>
-          <div className="flex items-center gap-6">
-            <span>${gameState.cash}</span>
+          <div className="flex items-center gap-4">
+            <span className="mr-4">${gameState.cash}</span>
             <button 
               onClick={resetGame}
               className="px-3 py-1 border border-gray-800 rounded hover:bg-gray-900 transition-colors"
-              title="Reset Game"
+              title="Restart Game"
             >
-              Reset
+              Restart
+            </button>
+            <button 
+              onClick={fullReset}
+              className="px-3 py-1 border border-gray-800 text-red-500 rounded hover:bg-gray-900 transition-colors"
+              title="Completely reset to mode selection"
+            >
+              Full Reset
             </button>
           </div>
         </header>
@@ -147,6 +167,7 @@ export default function App() {
         ) : (
           <GameScreen 
             gameState={gameState} 
+            aiMode={settings?.aiMode || false}
             currentScene={currentScene} 
             availableChoices={availableChoices} 
             isProcessing={isProcessing}

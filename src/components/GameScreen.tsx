@@ -8,11 +8,12 @@ interface GameScreenProps {
   currentScene: Scene;
   availableChoices: Choice[];
   isProcessing: boolean;
+  aiMode: boolean;
   loadingStatus?: string;
   onAction: (actionText: string, isCustom: boolean) => void;
 }
 
-export function GameScreen({ gameState, currentScene, availableChoices, isProcessing, loadingStatus, onAction }: GameScreenProps) {
+export function GameScreen({ gameState, currentScene, availableChoices, isProcessing, aiMode, loadingStatus, onAction }: GameScreenProps) {
   const [customAction, setCustomAction] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -113,8 +114,8 @@ export function GameScreen({ gameState, currentScene, availableChoices, isProces
             </div>
           )}
 
-          {/* Custom Action Input */}
-          {!currentScene.isEnding && (
+          {/* Custom Action Input (Only if AI Mode is enabled) */}
+          {!currentScene.isEnding && aiMode && (
              <form onSubmit={handleCustomSubmit} className="flex gap-2">
                 <input
                   type="text"

@@ -38,10 +38,13 @@ export async function generateActionOutcome(
   let closestChoice = availableChoices[0];
   let outcomeText = "";
 
-  if (isCustomAction) {
+  const savedSettings = localStorage.getItem('blackridge_settings_v1');
+  const settings = savedSettings ? JSON.parse(savedSettings) : { aiMode: false, apiKey: '' };
+
+  if (isCustomAction && settings.aiMode && settings.apiKey) {
     if (customOnProgress) customOnProgress('Generating consequence with AI...');
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: settings.apiKey });
       const choicesWithNextScenes = availableChoices.map((c, i) => {
         const nextScene = storyData.scenes.find(s => s.id === c.nextSceneId);
         const nextSceneHint = nextScene ? `\n   -> Leads to context: "${nextScene.text.substring(0, 150)}..."` : '';

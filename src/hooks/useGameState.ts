@@ -15,8 +15,19 @@ const INITIAL_STATE: GameState = {
 };
 
 export const STORAGE_KEY = 'blackridge_save_v2';
+export const SETTINGS_KEY = 'blackridge_settings_v1';
+
+export interface AppSettings {
+  aiMode: boolean;
+  apiKey: string;
+}
 
 export function useGameState() {
+  const [settings, setSettings] = useState<AppSettings | null>(() => {
+    const saved = localStorage.getItem(SETTINGS_KEY);
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [gameState, setGameState] = useState<GameState>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -29,7 +40,10 @@ export function useGameState() {
     return INITIAL_STATE;
   });
 
-  const [appState, setAppState] = useState<'loading' | 'menu' | 'playing'>('loading');
+  const [appState, setAppState] = useState<'setup' | 'loading' | 'menu' | 'playing'>(() => {
+    const savedSettings = localStorage.getItem(SETTINGS_KEY);
+    return savedSettings ? 'loading' : 'setup';
+  });
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingStatus, setLoadingStatus] = useState<string | undefined>('Initializing environment...');
   const [isAiReady, setIsAiReady] = useState(false);
@@ -134,8 +148,27 @@ export function useGameState() {
   };
 
   const resetGame = () => {
+    localStorage.removeItem(STORAGE_KEY);
     setGameState(INITIAL_STATE);
     setAppState('menu');
+  };
+
+  const fullReset = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(SETTINGS_KEY);
+    setGameState(INITIAL_STATE);
+    setSettings(null);
+    setAppState('setup');
+  };
+
+  const completeSetup = (newSettings: AppSettings) => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+    setSettings(newSettings);
+    setAppState('loading');
+  };
+
+  const openSetup = () => {
+    setAppState('setup');
   };
 
   const hasSave = gameState.currentSceneId !== 'start' && !gameState.currentSceneId.startsWith('ending_');
@@ -143,6 +176,7 @@ export function useGameState() {
   return {
     gameState,
     appState,
+    settings,
     setAppState,
     isProcessing,
     loadingStatus,
@@ -153,5 +187,8 @@ export function useGameState() {
     continueGame,
     endScene,
     resetGame,
+    fullReset,
+    completeSetup,
+    openSetup,
   };
 }

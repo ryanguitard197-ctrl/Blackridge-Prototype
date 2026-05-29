@@ -5,10 +5,11 @@ import { soundService } from '../services/soundService';
 interface StartScreenProps {
   onStart: () => void;
   onContinue?: () => void;
+  onSettings?: () => void;
   hasSave: boolean;
 }
 
-export function StartScreen({ onStart, onContinue, hasSave }: StartScreenProps) {
+export function StartScreen({ onStart, onContinue, onSettings, hasSave }: StartScreenProps) {
   const handleStart = () => {
     soundService.init();
     soundService.playDeepImpact();
@@ -30,6 +31,14 @@ export function StartScreen({ onStart, onContinue, hasSave }: StartScreenProps) 
         backgroundPosition: 'center'
       }}
     >
+      {onSettings && (
+        <button 
+          onClick={onSettings}
+          className="absolute top-6 right-6 px-4 py-2 bg-transparent border border-gray-600 text-gray-400 font-mono uppercase tracking-widest text-xs hover:border-gray-400 hover:text-white transition-colors z-20 rounded"
+        >
+          Mode Settings
+        </button>
+      )}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
