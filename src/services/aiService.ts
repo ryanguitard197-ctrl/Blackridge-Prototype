@@ -64,7 +64,7 @@ Your task:
     - 'transition_to_next_scene': You MUST vividly describe the character traveling, waiting, or transitioning from the current setting directly to the location/time of the Next Scene context. This is the missing bridge! If the player is in a car, but the next scene is in a safehouse, you must narrate them driving to the safehouse and walking inside.`;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview", 
+        model: "gemini-3.5-flash", 
         contents: promptText,
         config: {
             systemInstruction: "You are the Game Master for 'Blackridge', a gritty narrative RPG. Always reply with JSON. You write in the second-person ('You...').",
