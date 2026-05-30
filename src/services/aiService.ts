@@ -83,14 +83,19 @@ Your task:
       });
       
       const resJson = JSON.parse(response.text || "{}");
-      if (resJson.action_consequence && resJson.transition_to_next_scene && resJson.path_index !== undefined && availableChoices[resJson.path_index]) {
-        outcomeText = `${resJson.action_consequence} ${resJson.transition_to_next_scene}`;
+      console.log('AI Output JSON:', resJson);
+      
+      const parsedConsequence = resJson.action_consequence || `You decided to act: "${playerAction}".`;
+      const parsedTransition = resJson.transition_to_next_scene || "";
+      outcomeText = `${parsedConsequence} \n\n ${parsedTransition}`.trim();
+
+      if (resJson.path_index !== undefined && availableChoices[resJson.path_index]) {
         closestChoice = availableChoices[resJson.path_index];
       } else {
-        outcomeText = `You decided to act: "${playerAction}". The consequences ripple through the rainy streets.`;
+        closestChoice = availableChoices[0];
       }
     } catch (e) {
-      console.error(e);
+      console.error('AI Generation Error:', e);
       outcomeText = `You decided to act: "${playerAction}". The consequences ripple through the rainy streets.`;
     }
   } else {
